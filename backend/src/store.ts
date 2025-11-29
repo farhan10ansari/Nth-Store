@@ -25,7 +25,30 @@ class InMemoryStore {
         return this.data.products;
     }
 
- 
+    getProduct(id: string) {
+        return this.data.products.find((p) => p.id === id);
+    }
+
+    getCart(userId: string) {
+        return this.data.carts[userId] || [];
+    }
+
+    addToCart(userId: string, productId: string, quantity: number = 1) {
+        if (!this.data.carts[userId]) {
+            this.data.carts[userId] = [];
+        }
+
+        const cart = this.data.carts[userId];
+        const existingItem = cart.find((item) => item.productId === productId);
+
+        if (existingItem) {
+            existingItem.quantity += quantity;
+        } else {
+            cart.push({ productId, quantity });
+        }
+    }
+
+
 }
 
 export const store = new InMemoryStore();

@@ -1,6 +1,6 @@
 import express from 'express';
 import cors from 'cors';
-import { getProducts } from './controllers.ts';
+import { addToCart, getCart, getProducts } from './controllers.ts';
 
 
 const app = express();
@@ -11,5 +11,7 @@ app.use(express.json());
 
 // Public & User APIs
 app.get('/api/products', getProducts);
+app.get('/api/cart/:userId', getCart);
+app.post('/api/cart/add', addToCart);
 
 export default app;
