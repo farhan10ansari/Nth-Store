@@ -50,7 +50,7 @@ export const Admin: React.FC = () => {
     return (
         <div className="space-y-8 animate-fadeIn">
             <div>
-                <h1 className="text-3xl font-bold text-gray-900">Admin Dashboard</h1>
+                <h1 className="text-3xl font-bold text-gray-900">Dashboard Overview</h1>
                 <p className="text-gray-500 mt-1">Real-time store metrics and discount management.</p>
             </div>
 
