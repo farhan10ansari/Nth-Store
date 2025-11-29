@@ -48,7 +48,7 @@ A full-stack e-commerce simulation designed to demonstrate complex business logi
 
 ## 🏗️ Architecture
 
-The project follows a **Monorepo-style** structure separating concerns between Client and Server.
+The project follows a **Backend-Frontend** structure separating concerns between Client and Server.
 
 ### Tech Stack
 - **Frontend:** React (Vite), TypeScript, Tailwind CSS, TanStack Query (React Query), React Router DOM.
@@ -120,11 +120,7 @@ The core requirement is that **every n-th order** gets a discount code. To ensur
 1. **Configuration:** `n` is set to `3` by default.
 2. **Eligibility Check:** When Admin clicks "Generate", the backend checks:
    $ (CurrentOrderCount + 1) \mod n \equiv 0 $
-3. **Anti-Duplication (The Fix):** 
-   - Even if the condition is met, the system checks a `generatedCodesLog` map.
-   - If a code was already generated for **Order #6**, a second request will be rejected.
-   - This ensures only **one** lucky user gets the code per milestone.
-4. **Consumption:** A code is marked `isUsed: true` immediately upon successful checkout to prevent reuse.
+3. **Consumption:** A code is marked `isUsed: true` immediately upon successful checkout to prevent reuse.
 
 ---
 
@@ -134,9 +130,8 @@ The project is set up for scalability. To add unit tests:
 
 **Backend (Jest):**
 ```
-
-npm install --save-dev jest ts-jest @types/jest supertest
-npx ts-jest config:init
+cd backend
+npm run test
 
 ```
 *Example test file `src/tests/store.test.ts` is included in the source for testing the Nth logic.*
@@ -153,7 +148,7 @@ root
 │   │   ├── controllers.ts   \# API Resolvers
 │   │   ├── store.ts         \# In-Memory DB \& Nth Logic
 │   │   ├── types.ts         \# Shared Interfaces
-│   │   └── server.ts        \# Express Entry
+│   │   └── index.ts        \# Express Entry
 │   └── package.json
 │
 └── frontend
@@ -172,10 +167,9 @@ root
 
 1. **In-Memory Storage:** Data resets on server restart.
 2. **Single User Demo:** Frontend hardcodes `user_123` for simplicity (as per assignment scope).
-3. **Concurrency:** The node.js event loop handles basic concurrency; for production, a Redis lock or Database transaction would be required for the "Nth Order" check.
 
 ---
 
 **Assignment Submission**  
-*Developed byMohd Farhan Ansari*
+*Developed by Mohd Farhan Ansari*
 
