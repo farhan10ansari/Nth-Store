@@ -48,6 +48,24 @@ class InMemoryStore {
         }
     }
 
+    clearCart(userId: string) {
+        delete this.data.carts[userId];
+    }
+
+    createOrder(order: any) { // Using 'any' briefly for pure data object push
+        this.data.orders.push(order);
+    }
+    
+    validateCode(code: string): boolean {
+        const found = this.data.discountCodes.find((d) => d.code === code && !d.isUsed);
+        return !!found;
+    }
+
+    markCodeUsed(code: string) {
+        const found = this.data.discountCodes.find((d) => d.code === code);
+        if (found) found.isUsed = true;
+    }
+
 
 }
 
