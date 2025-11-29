@@ -13,5 +13,8 @@ export const api = {
     checkout: (userId: string, code?: string) =>
         axios.post(`${API_URL}/checkout`, { userId, discountCode: code }),
 
+    // Admin
+    getStats: () => axios.get(`${API_URL}/admin/stats`).then(res => res.data),
 
+    generateCode: () => axios.post(`${API_URL}/admin/generate-code`).then(res => res.data)
 };
