@@ -1,12 +1,10 @@
 import { type Request, type Response } from 'express';
 import { store } from './store.ts';
-import { v4 as uuidv4 } from 'uuid';
+import { v4 as uuidv4 } from 'uuid'; // Assume uuid is installed or use Math.random
 
 export const getProducts = (req: Request, res: Response) => {
     res.json(store.getProducts());
 };
-
-
 
 export const getCart = (req: Request, res: Response) => {
     const { userId } = req.params;
@@ -21,7 +19,6 @@ export const getCart = (req: Request, res: Response) => {
     res.json(enrichedCart);
 };
 
-
 export const addToCart = (req: Request, res: Response) => {
     const { userId, productId } = req.body;
     if (!userId || !productId) return res.status(400).send("Missing data");
@@ -29,7 +26,6 @@ export const addToCart = (req: Request, res: Response) => {
     store.addToCart(userId, productId);
     res.json({ success: true, message: "Added to cart" });
 };
-
 
 export const checkout = (req: Request, res: Response) => {
     const { userId, discountCode } = req.body;
@@ -60,7 +56,7 @@ export const checkout = (req: Request, res: Response) => {
     // Create Order
     const finalTotal = rawTotal - discountAmount;
     const newOrder = {
-        id: uuidv4(),
+        id: uuidv4(), // or Math.random().toString()
         items: [...cartItems],
         totalAmount: finalTotal,
         discountApplied: discountAmount,
@@ -71,4 +67,45 @@ export const checkout = (req: Request, res: Response) => {
     store.clearCart(userId);
 
     res.json({ success: true, order: newOrder });
+};
+
+
+
+// Admin Controllers
+
+export const generateDiscountCode = (req: Request, res: Response) => {
+    const totalOrders = store.getOrderCount();
+    const n = store.getNthConfig();
+
+
+    // We check if (totalOrders + 1) is divisible by n.
+    const isEligible = (totalOrders + 1) % n === 0;
+
+    if (isEligible) {
+        const newCode = `DISCOUNT_${Math.random().toString(36).substring(7).toUpperCase()}`;
+        store.addDiscountCode(newCode);
+        return res.json({ created: true, code: newCode });
+    }
+
+    res.json({ created: false, message: "Condition not met for Nth order" });
+};
+
+export const getAdminStats = (req: Request, res: Response) => {
+    const orders = store.getOrders();
+    const codes = store.getDiscountCodes();
+
+    const totalItemsPurchased = orders.reduce((acc, order) => {
+        return acc + order.items.reduce((iAcc, item) => iAcc + item.quantity, 0);
+    }, 0);
+
+    const totalPurchaseAmount = orders.reduce((acc, order) => acc + order.totalAmount, 0);
+    const totalDiscountAmount = orders.reduce((acc, order) => acc + order.discountApplied, 0);
+
+    res.json({
+        totalItemsPurchased,
+        totalPurchaseAmount,
+        discountCodes: codes,
+        totalDiscountAmount,
+        orderCount: orders.length
+    });
 };

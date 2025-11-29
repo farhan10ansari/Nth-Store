@@ -55,7 +55,20 @@ class InMemoryStore {
     createOrder(order: any) { // Using 'any' briefly for pure data object push
         this.data.orders.push(order);
     }
-    
+
+    getOrders() {
+        return this.data.orders;
+    }
+
+    getOrderCount() {
+        return this.data.orders.length;
+    }
+
+    // Discount Logic
+    addDiscountCode(code: string) {
+        this.data.discountCodes.push({ code, isUsed: false });
+    }
+
     validateCode(code: string): boolean {
         const found = this.data.discountCodes.find((d) => d.code === code && !d.isUsed);
         return !!found;
@@ -66,6 +79,24 @@ class InMemoryStore {
         if (found) found.isUsed = true;
     }
 
+    getDiscountCodes() {
+        return this.data.discountCodes;
+    }
+
+    getNthConfig() {
+        return this.data.nthOrderConfig;
+    }
+
+    // Reset Store (for testing purposes)
+    reset() {
+        this.data = {
+            products: initialProducts,
+            carts: {},
+            orders: [],
+            discountCodes: [],
+            nthOrderConfig: 3, 
+        };
+    }
 
 }
 
