@@ -3,6 +3,7 @@ import { Link, useLocation } from 'react-router-dom';
 import { ShoppingBag, ShoppingCart, LayoutDashboard } from 'lucide-react';
 import { useQuery } from '@tanstack/react-query';
 import { api } from '../api';
+import type { CartItem } from '../types';
 
 const CURRENT_USER_ID = "user_123";
 
@@ -10,12 +11,12 @@ export const Navbar: React.FC = () => {
     const location = useLocation();
 
     // Fetch cart count for badge
-    const { data: cartItems } = useQuery({
+    const { data: cartItems } = useQuery<CartItem[]>({
         queryKey: ['cart', CURRENT_USER_ID],
         queryFn: () => api.getCart(CURRENT_USER_ID),
     });
 
-    const cartCount = cartItems?.reduce((acc: number, item: any) => acc + item.quantity, 0) || 0;
+    const cartCount = cartItems?.reduce((acc: number, item) => acc + item.quantity, 0) || 0;
 
     const isActive = (path: string) =>
         location.pathname === path ? "text-indigo-600 bg-indigo-50" : "text-gray-600 hover:text-indigo-600 hover:bg-gray-50";
